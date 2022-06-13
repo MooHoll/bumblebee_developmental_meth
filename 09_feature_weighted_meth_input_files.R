@@ -57,11 +57,11 @@ sample_names <- list("A1","A2","A3","A4","B1","B2","B3","B4","C1","C2","C3", "C4
 names(samples) <- sample_names
 
 # Read in gene with start/end and total CpGs per gene
-annotation_with_total_cpgs <- read_table2("Bter1.0_genes_with_total_cpgs.txt")
-colnames(annotation_with_total_cpgs)[6] <- "cpg_count"
+annotation_with_total_cpgs <- read_table2("GCF_000214255.1_Bter_1.0_genomic_with_total_cpgs.txt")
+colnames(annotation_with_total_cpgs)[7] <- "cpg_count"
 colnames(annotation_with_total_cpgs)[2] <- "chr"
 
-registerDoParallel(cores = 2)
+registerDoParallel(cores = 4)
 
 # Calculate weighted meth for each gene for each sample
 foreach(i = seq_along(samples)) %dopar% {
@@ -76,6 +76,7 @@ foreach(i = seq_along(samples)) %dopar% {
                     annot.end,
                     annot.gene_id,
                     annot.feature,
+                    annot.number,
                     annot.cpg_count
                     FROM df AS sample
                     LEFT JOIN annotation_with_total_cpgs AS annot
@@ -83,8 +84,8 @@ foreach(i = seq_along(samples)) %dopar% {
                     AND (sample.cpg >= annot.start AND sample.cpg <= annot.end)")
   output <- output[!is.na(output$gene_id),]
   output <- output[,-c(1,2)]
-  check <- summaryBy(total_coverage + count_c ~ chr + feature + gene_id + start + end+ cpg_count, data=output, FUN=sum) 
+  check <- summaryBy(total_coverage + count_c ~ chr + feature + gene_id + start + end+ number + cpg_count, data=output, FUN=sum) 
   check$weightedMeth <- (check$cpg_count*check$count_c.sum)/(check$cpg_count*check$total_coverage.sum)
-  myfile <- file.path("./", paste0(names(samples[i]),"_","weighted_meth_just_genes.txt"))
+  myfile <- file.path("./", paste0(names(samples[i]),"_","weighted_meth_new_annot.txt"))
   write.table(check, file=myfile, quote=F, sep="\t", row.names=F)
 }

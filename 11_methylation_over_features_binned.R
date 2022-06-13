@@ -2,7 +2,7 @@
 # Re-make meth over feature graph for diff levels of methylation
 ## -------------------------------------------------------------------------
 
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/weighted_meth_genes")
+setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/weighted_meth_new_annotation")
 library(readr)
 library(doBy)
 library(ggplot2)
@@ -13,24 +13,24 @@ library(scales)
 library(ggpubr)
 library(ggthemes)
 ## -------------------------------------------------------------------------
-annotation <- read_delim("weighted_meth_annotation_by_stage_genes_only.txt", 
+annotation <- read_delim("weighted_meth_annotation_by_stage_new_annotation.txt", 
                          "\t", escape_double = FALSE, trim_ws = TRUE)
 # removed feature column as running again with all genes, would need to add back in 
-annotation <- annotation[,-c(1,3,4)]
-#annotation <- annotation[,-c(3,4,5)]
+#annotation <- annotation[,-c(1,3,4)]
+annotation <- annotation[,-c(3,4,5)]
 
-melted_annot <- melt(annotation, id.vars = "gene_id")
-colnames(melted_annot) <- c("ID","Stage","Weighted_Methylation")
-#colnames(melted_annot) <- c("Feature","ID","Stage","Weighted_Methylation")
+melted_annot <- melt(annotation, id.vars = c("feature","gene_id"))
+#colnames(melted_annot) <- c("ID","Stage","Weighted_Methylation")
+colnames(melted_annot) <- c("Feature","ID","Stage","Weighted_Methylation")
 
 # Remove rows where NA in one sex
 melted_annot <- melted_annot[!is.na(melted_annot$Weighted_Methylation),]
 
 # Remove mRNA and CDS not really informative
-#melted_annot <- melted_annot[!melted_annot$Feature == "CDS",]
-#melted_annot <- melted_annot[!melted_annot$Feature == "RNA",]
-#melted_annot <- melted_annot[!melted_annot$Feature == "mRNA",]
-#melted_annot <- melted_annot[!melted_annot$Feature == "transcript",]
+melted_annot <- melted_annot[!melted_annot$Feature == "CDS",]
+melted_annot <- melted_annot[!melted_annot$Feature == "RNA",]
+melted_annot <- melted_annot[!melted_annot$Feature == "mRNA",]
+melted_annot <- melted_annot[!melted_annot$Feature == "transcript",]
 
 ## -------------------------------------------------------------------------
 #### Define summary function (ref:http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)/)
@@ -73,8 +73,8 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 # Normal graph with all information
 
 summary_all<-summarySE(melted_annot, measurevar = "Weighted_Methylation", 
-                       groupvars = "Stage")
-                        #groupvars = c("Feature","Stage"))
+                       #groupvars = "Stage")
+                        groupvars = c("Feature","Stage"))
 summary_all$Stage <- factor(summary_all$Stage, 
                             levels = c("repro_brain","repro_ovaries","larvae","pupae", "male_brain","sperm"))
 
@@ -124,7 +124,7 @@ melted_annot$bins[melted_annot$Weighted_Methylation > 0.3 &
 melted_annot$bins[melted_annot$Weighted_Methylation > 0.7] <-"high"
 melted_annot$bins[melted_annot$Weighted_Methylation ==0] <-"none"
 head(melted_annot)
-write.table(melted_annot, file="weighted_meth_by_group_genes_only.txt", col.names = T,
+write.table(melted_annot, file="weighted_meth_by_group_bew_annot.txt", col.names = T,
             row.names = F, quote = F, sep = "\t")
 
 melted_annot$combined <- paste0(melted_annot$Feature, "_", melted_annot$Stage)

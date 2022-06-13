@@ -11,17 +11,18 @@ Bumble_bee_ensemble_GO_terms <- read_delim("../Bumble_bee_ensemble_GO_terms.txt"
                                            col_names = FALSE, trim_ws = TRUE)
 colnames(Bumble_bee_ensemble_GO_terms) <- c("geneID", "GOIds")
 
-weighted_meth_by_group <- read_delim("../../weighted_meth/weighted_meth_by_group.txt", 
+weighted_meth_by_group <- read_delim("../../weighted_meth_genes/weighted_meth_by_group_genes_only.txt", 
                                      delim = "\t", escape_double = FALSE, 
                                      trim_ws = TRUE)
+colnames(weighted_meth_by_group)<-c("geneID","group","weighted_methylation","meth_category")
 
 # Get gene lists for no methylation
-none_A <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="repro_worker_brain" & weighted_meth_by_group$meth_category=="none"]))
-none_B <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="repro_worker_ovary"  & weighted_meth_by_group$meth_category=="none"]))
-none_C <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="larvae_head" & weighted_meth_by_group$meth_category=="none"]))
-none_D <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="pupae_head" & weighted_meth_by_group$meth_category=="none"]))
+none_A <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="repro_brain" & weighted_meth_by_group$meth_category=="none"]))
+none_B <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="repro_ovaries"  & weighted_meth_by_group$meth_category=="none"]))
+none_C <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="larvae" & weighted_meth_by_group$meth_category=="none"]))
+none_D <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="pupae" & weighted_meth_by_group$meth_category=="none"]))
 none_E <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="male_brain" & weighted_meth_by_group$meth_category=="none"]))
-none_F <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="male_sperm"  & weighted_meth_by_group$meth_category=="none"]))
+none_F <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="sperm"  & weighted_meth_by_group$meth_category=="none"]))
 
 colnames(none_A) <- "geneID"
 colnames(none_B) <- "geneID"
@@ -46,12 +47,12 @@ write.table(none_F_GO, file="F_no_meth_genes_with_GOs.txt", sep="\t",quote = F, 
 
 
 # Get gene lists for high methylation
-high_A <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="repro_worker_brain" & weighted_meth_by_group$meth_category=="high"]))
-high_B <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="repro_worker_ovary"  & weighted_meth_by_group$meth_category=="high"]))
-high_C <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="larvae_head" & weighted_meth_by_group$meth_category=="high"]))
-high_D <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="pupae_head" & weighted_meth_by_group$meth_category=="high"]))
+high_A <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="repro_brain" & weighted_meth_by_group$meth_category=="high"]))
+high_B <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="repro_ovaries"  & weighted_meth_by_group$meth_category=="high"]))
+high_C <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="larvae" & weighted_meth_by_group$meth_category=="high"]))
+high_D <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="pupae" & weighted_meth_by_group$meth_category=="high"]))
 high_E <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="male_brain" & weighted_meth_by_group$meth_category=="high"]))
-high_F <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="male_sperm"  & weighted_meth_by_group$meth_category=="high"]))
+high_F <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="sperm"  & weighted_meth_by_group$meth_category=="high"]))
 
 colnames(high_A) <- "geneID"
 colnames(high_B) <- "geneID"
