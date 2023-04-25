@@ -1,22 +1,29 @@
-#-----------------------------------------------
-# Script created by Alun Jones, see paper Bebane et al. (2019) Neonics and bumblebees...
-#-----------------------------------------------
+# Background sets
 
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis")
+setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis/Overlaps")
 library(GOstats)
 library(GSEABase)
 library(treemap)
 
+highly_variable_as_background <- read_csv("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis/Overlaps/highly_variable_as_background.txt")
+
+Bumble_bee_ensemble_GO_terms <- read_delim("../Bumble_bee_ensemble_GO_terms.txt", 
+                                           delim = "\t", escape_double = FALSE, 
+                                           col_names = FALSE, trim_ws = TRUE)
+colnames(Bumble_bee_ensemble_GO_terms) <- c("gene_id", "GOIds")
+
+highly_variable <- merge(highly_variable_as_background, Bumble_bee_ensemble_GO_terms, by = "gene_id")
+length(unique(highly_variable$gene_id)) #763/827
+write.table(highly_variable, file="highly_variable_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+
+#-----------------------------------------------
+# Script created by Alun Jones, see paper Bebane et al. (2019) Neonics and bumblebees...
+#-----------------------------------------------
+
 #-----------------------------------------------
 # Read in background GO set and make compatible with GOstats
 
-#GO_annotations <- read.table("./background_GO_lists/AvsB_background_gene_set.txt")
-#GO_annotations <- read.table("./background_GO_lists/AvsE_background_gene_set.txt")
-#GO_annotations <- read.table("./background_GO_lists/BvsC_background_gene_set.txt")
-#GO_annotations <- read.table("./background_GO_lists/BvsF_background_gene_set.txt")
-#GO_annotations <- read.table("./background_GO_lists/CvsD_background_gene_set.txt")
-#GO_annotations <- read.table("./background_GO_lists/DvsE_background_gene_set.txt")
-GO_annotations <- read.table("./background_GO_lists/EvsF_background_gene_set.txt")
+GO_annotations <- read.table("./highly_variable_background_gene_set.txt")
 
 GO_annotations[,3] <- paste("IEA")
 names(GO_annotations) <- c("genes","GOIds","evi")
@@ -35,13 +42,7 @@ universe <- as.vector(unique(GO_annotations[,3]))
 #-----------------------------------------------
 # Read in gene's of interest 
 
-#my_genes <- read.table("./diff_meth_genes/AvsB_diff_meth_genes_final.txt", header = T)
-#my_genes <- read.table("./diff_meth_genes/AvsE_diff_meth_genes_final.txt", header = T)
-#my_genes <- read.table("./diff_meth_genes/BvsC_diff_meth_genes_final.txt", header = T)
-#my_genes <- read.table("./diff_meth_genes/BvsF_diff_meth_genes_final.txt", header = T)
-#my_genes <- read.table("./diff_meth_genes/CvsD_diff_meth_genes_final.txt", header = T)
-#my_genes <- read.table("./diff_meth_genes/DvsE_diff_meth_genes_final.txt", header = T)
-my_genes <- read.table("./diff_meth_genes/EvsF_diff_meth_genes_final.txt", header = T)
+my_genes <- read.table("./highly_variable_and_diff_meth.txt", header = T)
 
 my_genes <- as.data.frame(na.omit(my_genes$gene_id))
 colnames(my_genes) <- "genes"
@@ -52,14 +53,7 @@ my_genes <- as.vector(my_genes[,1])
 
 my_genes <- my_genes[my_genes %in% universe]
 length(my_genes)
-# AvsB 1102/1222
-# AvsE 26/37
-# BvsC 252/286
-# BvsF 112/134
-# CvsD 2/5
-# DvsE 138/156
-# EvsF 33/49
-
+# 185/200
 
 #-----------------------------------------------
 # Set up paramters for hypergeometric test
@@ -122,10 +116,21 @@ Result_FDR <- Result[p.adjust(Result$Pvalue,method = "fdr") < 0.05,]
 
 REVIGO <- Result_FDR[,1:2]
 
-#write.table(REVIGO,"./Diff_meth_FDR0.05/AvsB_enriched_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Diff_meth_FDR0.05/AvsE_enriched_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Diff_meth_FDR0.05/BvsC_enriched_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Diff_meth_FDR0.05/BvsF_enriched_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Diff_meth_FDR0.05/CvsD_enriched_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Diff_meth_FDR0.05/DvsE_enriched_GOs.txt",row.names = F,sep = "\t",quote = F)
-write.table(REVIGO,"./Diff_meth_FDR0.05/EvsF_enriched_GOs.txt",row.names = F,sep = "\t",quote = F)
+write.table(REVIGO,"./highly_variable_and_diff_meth_GOs.txt",row.names = F,sep = "\t",quote = F)
+
+# Get table for supplementary
+p_vals <- read_delim("./highly_variable_and_diff_meth_GOs.txt", 
+                     delim = "\t", escape_double = FALSE, 
+                     trim_ws = TRUE)
+
+freq_info <- read_delim("./Revigo_BP_Table.tsv", 
+                        delim = "\t", escape_double = FALSE, 
+                        trim_ws = TRUE)
+freq_info <- freq_info[,c(1,2,5)]
+colnames(freq_info)[1] <- "GOBPID"
+
+both <- merge(p_vals, freq_info, by = "GOBPID")
+
+write.table(both, file="info_for_supp.txt", sep="\t", quote = F, col.names = T, row.names = F)
+
+

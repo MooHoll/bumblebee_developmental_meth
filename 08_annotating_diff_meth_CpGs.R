@@ -10,6 +10,8 @@ library(ggplot2)
 library(dplyr)
 library(data.table)
 library(scales)
+library(plyr)
+library(tidyverse)
 
 ## -------------------------------------------------------------------------
 # Get files in order
@@ -258,4 +260,239 @@ ggplot(introns, aes(x=number, y=cpg_position.length))+
   scale_y_continuous(labels = label_number(accuracy = 1))+
   facet_grid(rows = vars(comparison),scales = "free")
 
+#-------------------------------------------------------------------------------------------
+
+# Keep only genes which have a diff meth CpG in exon and a weighted meth difference of 15% for that exon
+head(output)
+exons_with_a_cpg <- output[output$feature=="exon",]
+exons_with_a_cpg <- exons_with_a_cpg[,c(3,4,7,8,9,10)]
+
+weighted_meth <- read_delim("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/weighted_meth_new_annotation/weighted_meth_annotation_by_stage_new_annotation.txt", 
+                                                               delim = "\t", escape_double = FALSE, 
+                                                               trim_ws = TRUE)
+weighted_meth_exons <- weighted_meth[weighted_meth$feature=="exon",]
+weighted_meth_exons <- weighted_meth_exons[,-1]
+
+both <- merge(exons_with_a_cpg, weighted_meth_exons, by=c("gene_id","start","end"))
+table(exons_with_a_cpg$comparison)
+table(both$comparison) # they match, this works
+
+
+# Pull out a dataframe for each comparison now
+head(both)
+AvsB <- both[both$comparison=="AvsB",]
+AvsB <- AvsB[,c(1,5,11,12)]
+AvsB$overall_diff <- AvsB$repro_brain - AvsB$repro_ovaries
+AvsB$diff_15 <- "no"
+AvsB$diff_15[AvsB$overall_diff > 0.15] <- "A"
+AvsB$diff_15[AvsB$overall_diff < -0.15] <- "B"
+
+# Remove rows which don't match the same direction of the cpg, only a couple it seems
+table(AvsB$diff_15)
+counts <- ddply(AvsB, .(AvsB$diff_15, AvsB$hypermethylated), nrow)
+AvsB <- AvsB[AvsB$hypermethylated == AvsB$diff_15,]
+write.table(AvsB, file="AvsB_filtered_diff_meth_genes.txt", sep="\t", quote=F, col.names = T, row.names = F)
+
+# BvsC
+BvsC <- both[both$comparison=="BvsC",]
+BvsC <- BvsC[,c(1,5,12,8)]
+BvsC$overall_diff <- BvsC$repro_ovaries - BvsC$larvae
+BvsC$diff_15 <- "no"
+BvsC$diff_15[BvsC$overall_diff > 0.15] <- "B"
+BvsC$diff_15[BvsC$overall_diff < -0.15] <- "C"
+table(BvsC$diff_15)
+ddply(BvsC, .(BvsC$diff_15, BvsC$hypermethylated), nrow)
+BvsC <- BvsC[BvsC$hypermethylated == BvsC$diff_15,]
+write.table(BvsC, file="BvsC_filtered_diff_meth_genes.txt", sep="\t", quote=F, col.names = T, row.names = F)
+
+# CvsD
+CvsD <- both[both$comparison=="CvsD",]
+CvsD <- CvsD[,c(1,5,8,10)]
+CvsD$overall_diff <- CvsD$larvae - CvsD$pupae
+CvsD$diff_15 <- "no"
+CvsD$diff_15[CvsD$overall_diff > 0.15] <- "C"
+CvsD$diff_15[CvsD$overall_diff < -0.15] <- "D"
+table(CvsD$diff_15)
+ddply(CvsD, .(CvsD$diff_15, CvsD$hypermethylated), nrow)
+CvsD <- CvsD[CvsD$hypermethylated == CvsD$diff_15,]
+write.table(CvsD, file="CvsD_filtered_diff_meth_genes.txt", sep="\t", quote=F, col.names = T, row.names = F)
+
+# DvsE
+DvsE <- both[both$comparison=="DvsE",]
+DvsE <- DvsE[,c(1,5,10,9)]
+DvsE$overall_diff <- DvsE$pupae - DvsE$male_brain
+DvsE$diff_15 <- "no"
+DvsE$diff_15[DvsE$overall_diff > 0.15] <- "D"
+DvsE$diff_15[DvsE$overall_diff < -0.15] <- "E"
+table(DvsE$diff_15)
+ddply(DvsE, .(DvsE$diff_15, DvsE$hypermethylated), nrow)
+DvsE <- DvsE[DvsE$hypermethylated == DvsE$diff_15,]
+write.table(DvsE, file="DvsE_filtered_diff_meth_genes.txt", sep="\t", quote=F, col.names = T, row.names = F)
+
+# EvsF
+EvsF <- both[both$comparison=="EvsF",]
+EvsF <- EvsF[,c(1,5,9,13)]
+EvsF$overall_diff <- EvsF$male_brain - EvsF$sperm
+EvsF$diff_15 <- "no"
+EvsF$diff_15[EvsF$overall_diff > 0.15] <- "E"
+EvsF$diff_15[EvsF$overall_diff < -0.15] <- "F"
+table(EvsF$diff_15)
+ddply(EvsF, .(EvsF$diff_15, EvsF$hypermethylated), nrow)
+EvsF <- EvsF[EvsF$hypermethylated == EvsF$diff_15,]
+write.table(EvsF, file="EvsF_filtered_diff_meth_genes.txt", sep="\t", quote=F, col.names = T, row.names = F)
+
+# AvsE
+AvsE <- both[both$comparison=="AvsE",]
+AvsE <- AvsE[,c(1,5,11,9)]
+AvsE$overall_diff <- AvsE$repro_brain - AvsE$male_brain
+AvsE$diff_15 <- "no"
+AvsE$diff_15[AvsE$overall_diff > 0.15] <- "A"
+AvsE$diff_15[AvsE$overall_diff < -0.15] <- "E"
+table(AvsE$diff_15)
+ddply(AvsE, .(AvsE$diff_15, AvsE$hypermethylated), nrow)
+AvsE <- AvsE[AvsE$hypermethylated == AvsE$diff_15,]
+write.table(AvsE, file="AvsE_filtered_diff_meth_genes.txt", sep="\t", quote=F, col.names = T, row.names = F)
+
+# BvsF
+BvsF <- both[both$comparison=="BvsF",]
+BvsF <- BvsF[,c(1,5,12,13)]
+BvsF$overall_diff <- BvsF$repro_ovaries - BvsF$sperm
+BvsF$diff_15 <- "no"
+BvsF$diff_15[BvsF$overall_diff > 0.15] <- "B"
+BvsF$diff_15[BvsF$overall_diff < -0.15] <- "F"
+table(BvsF$diff_15)
+ddply(BvsF, .(BvsF$diff_15, BvsF$hypermethylated), nrow)
+BvsF <- BvsF[BvsF$hypermethylated == BvsF$diff_15,]
+write.table(BvsF, file="BvsF_filtered_diff_meth_genes.txt", sep="\t", quote=F, col.names = T, row.names = F)
+
+# Lets make an upset of the overlaps
+library(UpSetR)
+library(grid)
+
+hypermethylated_AvsB_A <- as.data.frame(AvsB$gene_id[AvsB$hypermethylated=="A"])
+colnames(hypermethylated_AvsB_A)<-"gene_id"
+hypermethylated_AvsB_B <- as.data.frame(AvsB$gene_id[AvsB$hypermethylated=="B"])
+colnames(hypermethylated_AvsB_B)<-"gene_id"
+
+hypermethylated_BvsC_B <- as.data.frame(BvsC$gene_id[BvsC$hypermethylated=="B"])
+colnames(hypermethylated_BvsC_B)<-"gene_id"
+hypermethylated_BvsC_C <- as.data.frame(BvsC$gene_id[BvsC$hypermethylated=="C"])
+colnames(hypermethylated_BvsC_C)<-"gene_id"
+
+hypermethylated_CvsD_C <- as.data.frame(CvsD$gene_id[CvsD$hypermethylated=="C"])
+colnames(hypermethylated_CvsD_C)<-"gene_id"
+hypermethylated_CvsD_D <- as.data.frame(CvsD$gene_id[CvsD$hypermethylated=="D"])
+colnames(hypermethylated_CvsD_D)<-"gene_id"
+
+hypermethylated_DvsE_D <- as.data.frame(DvsE$gene_id[DvsE$hypermethylated=="D"])
+colnames(hypermethylated_DvsE_D)<-"gene_id"
+hypermethylated_DvsE_E <- as.data.frame(DvsE$gene_id[DvsE$hypermethylated=="E"])
+colnames(hypermethylated_DvsE_E)<-"gene_id"
+
+hypermethylated_EvsF_E <- as.data.frame(EvsF$gene_id[EvsF$hypermethylated=="E"])
+colnames(hypermethylated_EvsF_E)<-"gene_id"
+hypermethylated_EvsF_F <- as.data.frame(EvsF$gene_id[EvsF$hypermethylated=="F"])
+colnames(hypermethylated_EvsF_F)<-"gene_id"
+
+hypermethylated_AvsE_A <- as.data.frame(AvsE$gene_id[AvsE$hypermethylated=="A"])
+colnames(hypermethylated_AvsE_A)<-"gene_id"
+hypermethylated_AvsE_E <- as.data.frame(AvsE$gene_id[AvsE$hypermethylated=="E"])
+colnames(hypermethylated_AvsE_E)<-"gene_id"
+
+hypermethylated_BvsF_B <- as.data.frame(BvsF$gene_id[BvsF$hypermethylated=="B"])
+colnames(hypermethylated_BvsF_B)<-"gene_id"
+hypermethylated_BvsF_F <- as.data.frame(BvsF$gene_id[BvsF$hypermethylated=="F"])
+colnames(hypermethylated_BvsF_F)<-"gene_id"
+
+all <- rbind(hypermethylated_AvsB_A,hypermethylated_AvsB_B,hypermethylated_BvsC_B,
+             hypermethylated_BvsC_C,hypermethylated_CvsD_C,hypermethylated_CvsD_D,
+             hypermethylated_DvsE_D,hypermethylated_DvsE_E,hypermethylated_EvsF_E,
+             hypermethylated_EvsF_F,hypermethylated_AvsE_A,hypermethylated_AvsE_E,
+             hypermethylated_BvsF_B,hypermethylated_BvsF_F)
+all <- as.data.frame(all[!duplicated(all),]) #1516 total genes which change across development
+colnames(all) <- "gene_id"
+
+all$`Hypermethylated in worker brain compared to ovaries` <- 0
+all$`Hypermethylated in worker brain compared to ovaries`[all$gene_id %in% hypermethylated_AvsB_A$gene_id] <- 1
+all$`Hypermethylated in ovaries compared to worker brain` <- 0
+all$`Hypermethylated in ovaries compared to worker brain`[all$gene_id %in% hypermethylated_AvsB_B$gene_id] <- 1
+
+all$`Hypermethylated in ovaries compared to larvae` <- 0
+all$`Hypermethylated in ovaries compared to larvae`[all$gene_id %in% hypermethylated_BvsC_B$gene_id] <- 1
+all$`Hypermethylated in larvae compared to ovaries` <- 0
+all$`Hypermethylated in larvae compared to ovaries`[all$gene_id %in% hypermethylated_BvsC_C$gene_id] <- 1
+
+all$`Hypermethylated in larvae compared to pupae` <- 0
+all$`Hypermethylated in larvae compared to pupae`[all$gene_id %in% hypermethylated_CvsD_C$gene_id] <- 1
+all$`Hypermethylated in pupae compared to larvae` <- 0
+all$`Hypermethylated in pupae compared to larvae`[all$gene_id %in% hypermethylated_CvsD_D$gene_id] <- 1
+
+all$`Hypermethylated in pupae compared to male brain` <- 0
+all$`Hypermethylated in pupae compared to male brain`[all$gene_id %in% hypermethylated_DvsE_D$gene_id] <- 1
+all$`Hypermethylated in male brain compared to pupae` <- 0
+all$`Hypermethylated in male brain compared to pupae`[all$gene_id %in% hypermethylated_DvsE_E$gene_id] <- 1
+
+all$`Hypermethylated in male brain compared to sperm` <- 0
+all$`Hypermethylated in male brain compared to sperm`[all$gene_id %in% hypermethylated_EvsF_E$gene_id] <- 1
+all$`Hypermethylated in sperm compared to male brain` <- 0
+all$`Hypermethylated in sperm compared to male brain`[all$gene_id %in% hypermethylated_EvsF_F$gene_id] <- 1
+
+all$`Hypermethylated in worker brain compared to male brain` <- 0
+all$`Hypermethylated in worker brain compared to male brain`[all$gene_id %in% hypermethylated_AvsE_A$gene_id] <- 1
+all$`Hypermethylated in male brain compared to worker brain` <- 0
+all$`Hypermethylated in male brain compared to worker brain`[all$gene_id %in% hypermethylated_AvsE_E$gene_id] <- 1
+
+all$`Hypermethylated in ovaries compared to sperm` <- 0
+all$`Hypermethylated in ovaries compared to sperm`[all$gene_id %in% hypermethylated_BvsF_B$gene_id] <- 1
+all$`Hypermethylated in sperm compared to ovaries` <- 0
+all$`Hypermethylated in sperm compared to ovaries`[all$gene_id %in% hypermethylated_BvsF_F$gene_id] <- 1
+
+upset(all, nsets =14, order.by = "freq",
+      text.scale = 1,
+      point.size = 3,
+      scale.sets = "identity",
+      mainbar.y.label =NULL)
+grid.text("Intersection Size",x = 0.4, y=0.60, gp=gpar(fontsize=14), rot = 90)
+
+
+head(all)
+write.table(all, file="all_diff_meth_geneIDs_with_category.txt", sep="\t", quote = F,
+            col.names = T, row.names = F)
+
+all %>%
+  map( function(x) table(x) )
+
+#`Hypermethylated in worker brain compared to ovaries` 1220 
+#`Hypermethylated in ovaries compared to worker brain` 2 
+
+#`Hypermethylated in ovaries compared to larvae` 1 
+#`Hypermethylated in larvae compared to ovaries` 285 
+
+#`Hypermethylated in larvae compared to pupae` 4 
+#`Hypermethylated in pupae compared to larvae` 1 
+
+#`Hypermethylated in pupae compared to male brain` 4 
+#`Hypermethylated in male brain compared to pupae` 153 
+
+#`Hypermethylated in male brain compared to sperm` 2 
+#`Hypermethylated in sperm compared to male brain` 47 
+
+#`Hypermethylated in worker brain compared to male brain` 12 
+#`Hypermethylated in male brain compared to worker brain` 25 
+
+#`Hypermethylated in ovaries compared to sperm` 0
+#`Hypermethylated in sperm compared to ovaries` 134 
+
+# Goodness of fit
+observed = c(0, 134)    # observed frequencies 
+expected = c(0.5, 0.5)    # expected proportions
+chisq.test(x = observed,
+           p = expected)
+# AvsB X-squared = 1214, df = 1, p-value < 2.2e-16
+# BvsC X-squared = 282.01, df = 1, p-value < 2.2e-16
+# CvsD X-squared = 1.8, df = 1, p-value = 0.1797
+# DvsE X-squared = 141.41, df = 1, p-value < 2.2e-16
+# EvsF X-squared = 41.327, df = 1, p-value = 1.288e-10
+# AvsE X-squared = 4.5676, df = 1, p-value = 0.03258
+# BvsF X-squared = 134, df = 1, p-value < 2.2e-16
 

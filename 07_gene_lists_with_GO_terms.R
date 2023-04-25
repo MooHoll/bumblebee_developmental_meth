@@ -2,7 +2,7 @@
 # Gene lists with GO terms
 #---------------------------------------------------
 
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis/gene_lists_with_GO_terms")
+setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis")
 library(readr)
 
 # Main files
@@ -77,7 +77,7 @@ write.table(high_F_GO, file="F_high_meth_genes_with_GOs.txt", sep="\t",quote = F
 
 
 # Get gene lists for diff meth
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis/diff_meth_gene_lists")
+setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis/diff_meth_genes")
 file.list <- list.files(pattern="*diff_meth_genes_final.txt")
 
 read_file1 <- function(x){
@@ -88,11 +88,9 @@ samples <- lapply(file.list, read_file1)
 sample_names <- list("AvsB","AvsE","BvsC","BvsF","CvsD","DvsE","EvsF")
 names(samples) <- sample_names
 
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis/gene_lists_with_GO_terms")
-
 for(i in seq_along(samples)){
   df <- samples[[i]]
-  final_file <- merge(df, Bumble_bee_ensemble_GO_terms, by = "geneID")
+  final_file <- merge(df, Bumble_bee_ensemble_GO_terms, by = "gene_id")
   myfile <- file.path("./", paste0(names(samples[i]),"_","with_GOs.txt"))
   write.table(final_file, file=myfile, quote=F, sep="\t", row.names=F, col.names = T)
 }

@@ -66,20 +66,20 @@ my_genes <- as.vector(my_genes[,1])
 my_genes <- my_genes[my_genes %in% universe]
 length(my_genes)
 # None:
-# A 2781/3939
-# B 2892/4045
-# C 3010/4227
-# D 2766/3927
-# E 2909/4118
-# F 3176/4384
+# A 48/92
+# B 27/46
+# C 162/232
+# D 7/18
+# E 43/87
+# F 899/1169
 
 # Highly meth:
-# A 20/30
-# B 0/1
-# C 36/46
+# A 26/35
+# B 1/1
+# C 38/42
 # D 5/9
-# E 32/42
-# F 401/448
+# E 36/45
+# F 416/450
 
 #-----------------------------------------------
 # Set up paramters for hypergeometric test
@@ -135,23 +135,23 @@ Result <- summary(GO_enrichment[["BP_over"]])
 #-----------------------------------------------
 # FDR correction
 
-Result_FDR <- Result[p.adjust(Result$Pvalue,method = "fdr") < 0.01,]
+Result_FDR <- Result[p.adjust(Result$Pvalue,method = "fdr") < 0.05,]
 
 #-----------------------------------------------
 # Make an output for REVIGO and write out
 
 REVIGO <- Result_FDR[,1:2]
 
-#write.table(REVIGO,"./Levels_FDR0.01/A_no_meth_against_all_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Levels_FDR0.01/B_no_meth_against_all_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Levels_FDR0.01/C_no_meth_against_all_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Levels_FDR0.01/D_no_meth_against_all_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Levels_FDR0.01/E_no_meth_against_all_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Levels_FDR0.01/F_no_meth_against_all_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
+#write.table(REVIGO,"./Levels_FDR0.05/No_meth/A_no_meth_against_all_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
+#write.table(REVIGO,"./Levels_FDR0.05/No_meth/B_no_meth_against_all_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
+#write.table(REVIGO,"./Levels_FDR0.05/No_meth/C_no_meth_against_all_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
+#write.table(REVIGO,"./Levels_FDR0.05/No_meth/D_no_meth_against_all_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
+#write.table(REVIGO,"./Levels_FDR0.05/No_meth/E_no_meth_against_all_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
+#write.table(REVIGO,"./Levels_FDR0.05/No_meth/F_no_meth_against_all_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
 
-#write.table(REVIGO,"./Levels_FDR0.01/A_high_meth_against_all_meth_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Levels_FDR0.01/B_high_meth_against_all_meth_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Levels_FDR0.01/C_high_meth_against_all_meth_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Levels_FDR0.01/D_high_meth_against_all_meth_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
-#write.table(REVIGO,"./Levels_FDR0.01/E_high_meth_against_all_meth_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
-write.table(REVIGO,"./Levels_FDR0.01/F_high_meth_against_all_meth_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
+#write.table(REVIGO,"./Levels_FDR0.05/High_meth/A_high_meth_against_all_meth_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
+#write.table(REVIGO,"./Levels_FDR0.05/High_meth/B_high_meth_against_all_meth_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
+#write.table(REVIGO,"./Levels_FDR0.05/High_meth/C_high_meth_against_all_meth_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
+#write.table(REVIGO,"./Levels_FDR0.05/High_meth/D_high_meth_against_all_meth_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
+#write.table(REVIGO,"./Levels_FDR0.05/High_meth/E_high_meth_against_all_meth_genes_GOs.txt",row.names = F,sep = "\t",quote = F)
+write.table(REVIGO,"./Levels_FDR0.05/High_meth/F_high_meth_against_all_meth_genes_GOs.txt",row.names = F,sep = "\t",quote = F)

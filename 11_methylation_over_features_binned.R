@@ -78,6 +78,7 @@ summary_all<-summarySE(melted_annot, measurevar = "Weighted_Methylation",
 summary_all$Stage <- factor(summary_all$Stage, 
                             levels = c("repro_brain","repro_ovaries","larvae","pupae", "male_brain","sperm"))
 
+summary_all <- summary_all[!summary_all$Feature=="gene",]
 ggplot(summary_all, aes(x=Feature, y=Weighted_Methylation, fill=Stage))+
   geom_bar(position = position_dodge(), stat = "identity")+
   geom_errorbar(aes(ymin=Weighted_Methylation-ci, ymax=Weighted_Methylation+ci),
@@ -88,8 +89,8 @@ ggplot(summary_all, aes(x=Feature, y=Weighted_Methylation, fill=Stage))+
   ylab("Weighted Methylation Level")+
   theme(axis.text.y=element_text(size=18),
         axis.text.x=element_text(angle=45,hjust=1,size=18),
-        axis.title.y=element_text(size=20),
-        axis.title.x = element_text(size=20),
+        axis.title.y=element_text(size=22),
+        axis.title.x = element_text(size=22),
         plot.title=element_text(size = 20),
         legend.text = element_text(size=20),
         legend.title = element_blank())+
@@ -97,9 +98,9 @@ ggplot(summary_all, aes(x=Feature, y=Weighted_Methylation, fill=Stage))+
                     labels=c("Worker Brain","Worker Ovaries","Larvae","Pupae", "Male Brain","Sperm"),
                     values=c("#D55E00","#E69F00","#F0E442","#009E73","#0072B2","#CC79A7"),
                     limits =c("repro_brain","repro_ovaries","larvae","pupae", "male_brain","sperm"))+
-  scale_x_discrete(breaks = c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","intergenic","lnc_RNA"),
-                   labels = c("Promoter","5' UTR","3' UTR","Gene","Exon","Intron","Intergenic","lnc RNA"),
-                   limits =c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","lnc_RNA","intergenic"))
+  scale_x_discrete(breaks = c("promoter","five_prime_UTR","three_prime_UTR","exon","intron","intergenic","lnc_RNA"),
+                   labels = c("Promoter","5' UTR","3' UTR","Exon","Intron","Intergenic","lnc RNA"),
+                   limits =c("promoter","five_prime_UTR","three_prime_UTR","exon","intron","lnc_RNA","intergenic"))
 
 # Stats
 library(multcomp)
@@ -272,3 +273,6 @@ annotate_figure(levels_across_feature,
                 bottom = text_grob("Genomic Feature", 
                                    color = "black", size =12,
                                    hjust = 0.75 ))
+
+
+

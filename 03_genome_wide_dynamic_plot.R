@@ -95,10 +95,10 @@ ggplot(summary_none_category, aes(x=Stage, y=Weighted_Methylation))+
   xlab("Developmental Stage")+
   ylab("Weighted Methylation")+
   theme_bw()+
-  theme(axis.text.y=element_text(size=14),
-        axis.text.x=element_text(size=14,angle = 45,hjust=1),
-        axis.title=element_text(size=16),
-        legend.text=element_text(size=16),
+  theme(axis.text.y=element_text(size=18),
+        axis.text.x=element_text(size=18,angle = 45,hjust=1),
+        axis.title=element_text(size=22),
+        legend.text=element_text(size=22),
         legend.title = element_blank())
 
 # Now need to do the same but for absolubte counts
@@ -107,15 +107,15 @@ head(weighted_meth_all_samples)
 library(doBy)
 counts_per_group <- summaryBy(Weighted_Methylation ~ ID+Stage, data = weighted_meth_all_samples, FUN=mean) 
 length(unique(counts_per_group$ID)) # 10568 genes
-counts_per_group$meth_category<- "none"
-counts_per_group$meth_category[(counts_per_group$Weighted_Methylation.mean > 0.005 & counts_per_group$Weighted_Methylation.mean <= 0.3)] <- "low"
-counts_per_group$meth_category[(counts_per_group$Weighted_Methylation.mean > 0.3 & counts_per_group$Weighted_Methylation.mean <= 0.7)] <- "medium"
-counts_per_group$meth_category[(counts_per_group$Weighted_Methylation.mean > 0.7 & counts_per_group$Weighted_Methylation.mean <= 1)] <- "high"
+counts_per_group$meth_category<- "None"
+counts_per_group$meth_category[(counts_per_group$Weighted_Methylation.mean > 0.005 & counts_per_group$Weighted_Methylation.mean <= 0.3)] <- "Low"
+counts_per_group$meth_category[(counts_per_group$Weighted_Methylation.mean > 0.3 & counts_per_group$Weighted_Methylation.mean <= 0.7)] <- "Medium"
+counts_per_group$meth_category[(counts_per_group$Weighted_Methylation.mean > 0.7 & counts_per_group$Weighted_Methylation.mean <= 1)] <- "High"
 
 counts_per_group_summary <- as.data.frame(table(counts_per_group[,c(4,2)]))
+counts_per_group_summary$meth_category = factor(counts_per_group_summary$meth_category, levels=c("High","Medium","Low","None"))
 
-
-p <- ggplot(counts_per_group_summary, aes(x=Stage, y=Freq, colour=meth_category))+
+ggplot(counts_per_group_summary, aes(x=Stage, y=Freq, colour=meth_category))+
   geom_point(size=3)+
   geom_line(aes(group=meth_category), size=2)+
   scale_x_discrete(breaks=c("repro_brain","repro_ovaries","larvae",
@@ -127,9 +127,12 @@ p <- ggplot(counts_per_group_summary, aes(x=Stage, y=Freq, colour=meth_category)
   xlab("Developmental Stage")+
   ylab("Gene Count")+
   theme_bw()+
-  theme(axis.text.y=element_text(size=14),
-        axis.text.x=element_text(size=14,angle = 45,hjust=1),
-        axis.title=element_text(size=16),
-        legend.text=element_text(size=16),
-        legend.title = element_blank())
-p + facet_grid(rows = vars(meth_category),scales = "free")
+  theme(axis.text.y=element_text(size=13),
+        axis.text.x=element_text(size=18,angle = 45,hjust=1),
+        axis.title=element_text(size=22),
+        legend.position = "none",
+        strip.text.y = element_text(size = 18))+
+  facet_grid(rows = vars(meth_category),scales = "free")+
+  scale_colour_manual(breaks=c("High","Medium","Low","None"),
+                      values=c("purple4","purple2","mediumpurple2","grey55"))
+

@@ -104,32 +104,32 @@ write.table(none_F, file="../GO_analysis/F_no_methylation_genes.txt", sep="\t",q
 # Look at highly methylated genes compared to all methylated genes?
 #---------------------------------------------------
 
-# all meth gene lists
+# all meth gene lists 
 meth_A <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="repro_brain"
-                                                             & !weighted_meth_by_group$meth_category=="none"]))
+                                                             & weighted_meth_by_group$weighted_meth> 0.05]))
 colnames(meth_A) <- "geneID"
 meth_B <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="repro_ovaries"
-                                                             & !weighted_meth_by_group$meth_category=="none"]))
+                                                             & weighted_meth_by_group$weighted_meth> 0.05]))
 colnames(meth_B) <- "geneID"
 meth_C <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="larvae"
-                                                             & !weighted_meth_by_group$meth_category=="none"]))
+                                                             & weighted_meth_by_group$weighted_meth> 0.05]))
 colnames(meth_C) <- "geneID"
 meth_D <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="pupae"
-                                                             & !weighted_meth_by_group$meth_category=="none"]))
+                                                             & weighted_meth_by_group$weighted_meth> 0.05]))
 colnames(meth_D) <- "geneID"
 meth_E <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="male_brain"
-                                                             & !weighted_meth_by_group$meth_category=="none"]))
+                                                             & weighted_meth_by_group$weighted_meth> 0.05]))
 colnames(meth_E) <- "geneID"
 meth_F <- as.data.frame(unique(weighted_meth_by_group$geneID[weighted_meth_by_group$group=="sperm"
-                                                             & !weighted_meth_by_group$meth_category=="none"]))
+                                                             & weighted_meth_by_group$weighted_meth> 0.05]))
 colnames(meth_F) <- "geneID"
 
-# A 10471
-# B 10516
-# C 10313
-# D 10549
-# E 10477
-# F 8874
+# A 4706
+# B 3893
+# C 4466
+# D 4710
+# E 4773
+# F 3705
 
 meth_A_GO <- merge(meth_A, Bumble_bee_ensemble_GO_terms, by = "geneID")
 length(unique(meth_A_GO$geneID))
@@ -144,19 +144,19 @@ length(unique(meth_E_GO$geneID))
 meth_F_GO <- merge(meth_F, Bumble_bee_ensemble_GO_terms, by = "geneID")
 length(unique(meth_F_GO$geneID))
 
-# A 8989/10471
-# B 9010/10516
-# C 8865/10313
-# D 9032/10549
-# E 8995/10477
-# F 7702/8874
+# A 4389/4706
+# B 3634/3893
+# C 4167/4466
+# D 4392/4710
+# E 4452/4773
+# F 3474/3705
 
-write.table(meth_A_GO, file="../GO_analysis/A_methgenes_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
-write.table(meth_B_GO, file="../GO_analysis/B_methgenes_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
-write.table(meth_C_GO, file="../GO_analysis/C_methgenes_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
-write.table(meth_D_GO, file="../GO_analysis/D_methgenes_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
-write.table(meth_E_GO, file="../GO_analysis/E_methgenes_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
-write.table(meth_F_GO, file="../GO_analysis/F_methgenes_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+write.table(meth_A_GO, file="../GO_analysis/background_levels_GO_lists/meth_genes/A_methgenes_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+write.table(meth_B_GO, file="../GO_analysis/background_levels_GO_lists/meth_genes/B_methgenes_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+write.table(meth_C_GO, file="../GO_analysis/background_levels_GO_lists/meth_genes/C_methgenes_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+write.table(meth_D_GO, file="../GO_analysis/background_levels_GO_lists/meth_genes/D_methgenes_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+write.table(meth_E_GO, file="../GO_analysis/background_levels_GO_lists/meth_genes/E_methgenes_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+write.table(meth_F_GO, file="../GO_analysis/background_levels_GO_lists/meth_genes/F_methgenes_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
 
 
 # Highly meth gene lists
