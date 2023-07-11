@@ -1,4 +1,6 @@
-# Background sets
+#-----------------------------------------------
+# Make a background GO set
+#-----------------------------------------------
 
 setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis/Overlaps")
 library(GOstats)
