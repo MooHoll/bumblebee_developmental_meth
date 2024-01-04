@@ -2,20 +2,21 @@
 # Make a background GO set
 #-----------------------------------------------
 
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis/Overlaps")
+setwd("~/Dropbox/Research/Leicester_postdoc/Projects/IDLE/Ben_Developmental_BB/GO_analysis/Revisions/Overlaps")
 library(GOstats)
 library(GSEABase)
 library(treemap)
 
-highly_variable_as_background <- read_csv("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis/Overlaps/highly_variable_as_background.txt")
+highly_variable_as_background <- read_csv("~/Dropbox/Research/Leicester_postdoc/Projects/IDLE/Ben_Developmental_BB/GO_analysis/Revisions/Overlaps/highly_variable_as_background.txt")
 
-Bumble_bee_ensemble_GO_terms <- read_delim("../Bumble_bee_ensemble_GO_terms.txt", 
+Bumble_bee_ensemble_GO_terms <- read_delim("../Bombus_terrestris_HGD_go_annotation.txt", 
                                            delim = "\t", escape_double = FALSE, 
                                            col_names = FALSE, trim_ws = TRUE)
+Bumble_bee_ensemble_GO_terms <- Bumble_bee_ensemble_GO_terms[,-2]
 colnames(Bumble_bee_ensemble_GO_terms) <- c("gene_id", "GOIds")
 
 highly_variable <- merge(highly_variable_as_background, Bumble_bee_ensemble_GO_terms, by = "gene_id")
-length(unique(highly_variable$gene_id)) #763/827
+length(unique(highly_variable$gene_id)) #777/827
 write.table(highly_variable, file="highly_variable_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
 
 #-----------------------------------------------
@@ -55,7 +56,7 @@ my_genes <- as.vector(my_genes[,1])
 
 my_genes <- my_genes[my_genes %in% universe]
 length(my_genes)
-# 185/200
+# 190/200
 
 #-----------------------------------------------
 # Set up paramters for hypergeometric test

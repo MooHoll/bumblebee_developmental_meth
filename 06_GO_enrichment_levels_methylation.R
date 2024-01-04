@@ -2,7 +2,7 @@
 # Script created by Alun Jones, see paper Bebane et al. (2019) Neonics and bumblebees...
 #-----------------------------------------------
 
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis")
+setwd("~/Dropbox/Research/Leicester_postdoc/Projects/IDLE/Ben_Developmental_BB/GO_analysis/Revisions")
 library(GOstats)
 library(GSEABase)
 library(treemap)
@@ -66,20 +66,20 @@ my_genes <- as.vector(my_genes[,1])
 my_genes <- my_genes[my_genes %in% universe]
 length(my_genes)
 # None:
-# A 48/92
-# B 27/46
-# C 162/232
-# D 7/18
-# E 43/87
-# F 899/1169
+# A 45/92
+# B 25/46
+# C 164/232
+# D 4/18
+# E 40/87
+# F 900/1169
 
 # Highly meth:
-# A 26/35
-# B 1/1
-# C 38/42
-# D 5/9
-# E 36/45
-# F 416/450
+# A 27/35
+# B 0/1
+# C 39/42
+# D 7/9
+# E 39/45
+# F 421/450
 
 #-----------------------------------------------
 # Set up paramters for hypergeometric test

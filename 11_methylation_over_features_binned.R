@@ -27,10 +27,11 @@ colnames(melted_annot) <- c("Feature","ID","Stage","Weighted_Methylation")
 melted_annot <- melted_annot[!is.na(melted_annot$Weighted_Methylation),]
 
 # Remove mRNA and CDS not really informative
-melted_annot <- melted_annot[!melted_annot$Feature == "CDS",]
+#melted_annot <- melted_annot[!melted_annot$Feature == "CDS",]
 melted_annot <- melted_annot[!melted_annot$Feature == "RNA",]
 melted_annot <- melted_annot[!melted_annot$Feature == "mRNA",]
 melted_annot <- melted_annot[!melted_annot$Feature == "transcript",]
+
 
 ## -------------------------------------------------------------------------
 #### Define summary function (ref:http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)/)
@@ -50,6 +51,7 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
                  .fun = function(xx, col) {
                    c(N    = length2(xx[[col]], na.rm=na.rm),
                      mean = mean   (xx[[col]], na.rm=na.rm),
+                     median = median   (xx[[col]], na.rm=na.rm),
                      sd   = sd     (xx[[col]], na.rm=na.rm)
                    )
                  },
@@ -77,6 +79,7 @@ summary_all<-summarySE(melted_annot, measurevar = "Weighted_Methylation",
                         groupvars = c("Feature","Stage"))
 summary_all$Stage <- factor(summary_all$Stage, 
                             levels = c("repro_brain","repro_ovaries","larvae","pupae", "male_brain","sperm"))
+write.table(summary_all, file="summary_data_for_feature_graph.txt", sep="\t", quote=F, col.names = T, row.names = F)
 
 summary_all <- summary_all[!summary_all$Feature=="gene",]
 ggplot(summary_all, aes(x=Feature, y=Weighted_Methylation, fill=Stage))+

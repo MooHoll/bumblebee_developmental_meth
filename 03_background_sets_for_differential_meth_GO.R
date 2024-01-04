@@ -2,7 +2,7 @@
 # Background gene sets for differential meth GO analysis
 #---------------------------------------------------
 
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/weighted_meth_genes")
+setwd("~/Dropbox/Research/Leicester_postdoc/Projects/IDLE/Ben_Developmental_BB/weighted_meth_genes")
 library(readr)
 library(data.table)
 
@@ -66,10 +66,11 @@ AvsE_genes <- Reduce(function(...) merge(..., by = "gene_id", all = TRUE),AvsE)
 # BvsF 4983
 # AvsE 5112
 
-# Now add the annotated GO terms (file made by Alun)
-Bumble_bee_ensemble_GO_terms <- read_delim("../GO_analysis/Bumble_bee_ensemble_GO_terms.txt", 
+# Now add the annotated GO terms
+Bumble_bee_ensemble_GO_terms <- read_delim("../GO_analysis/Revisions/Bombus_terrestris_HGD_go_annotation.txt", 
                                            delim = "\t", escape_double = FALSE, 
                                            col_names = FALSE, trim_ws = TRUE)
+Bumble_bee_ensemble_GO_terms <- Bumble_bee_ensemble_GO_terms[,-2]
 colnames(Bumble_bee_ensemble_GO_terms) <- c("gene_id", "GOIds")
 
 AvsB_GO <- merge(AvsB_genes, Bumble_bee_ensemble_GO_terms, by = "gene_id")
@@ -87,24 +88,24 @@ length(unique(BvsF_GO$gene_id))
 AvsE_GO <- merge(AvsE_genes, Bumble_bee_ensemble_GO_terms, by = "gene_id")
 length(unique(AvsE_GO$gene_id))
 
-# AvsB 4715/5083
-# BvsC 4685/5052
-# CvsD 4758/5130
-# DvsE 4716/5069
-# EvsF 4774/5142
-# BvsF 4621/4983
-# AvsE 4752/5112
+# AvsB 4786/5083
+# BvsC 4755/5052
+# CvsD 4830/5130
+# DvsE 4785/5069
+# EvsF 4840/5142
+# BvsF 4688/4983
+# AvsE 4823/5112
 
-write.table(AvsB_GO, file="../GO_analysis/background_GO_lists/AvsB_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
-write.table(BvsC_GO, file="../GO_analysis/background_GO_lists/BvsC_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
-write.table(CvsD_GO, file="../GO_analysis/background_GO_lists/CvsD_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
-write.table(DvsE_GO, file="../GO_analysis/background_GO_lists/DvsE_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
-write.table(EvsF_GO, file="../GO_analysis/background_GO_lists/EvsF_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
-write.table(BvsF_GO, file="../GO_analysis/background_GO_lists/BvsF_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
-write.table(AvsE_GO, file="../GO_analysis/background_GO_lists/AvsE_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+write.table(AvsB_GO, file="../GO_analysis/Revisions/background_GO_lists/AvsB_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+write.table(BvsC_GO, file="../GO_analysis/Revisions/background_GO_lists/BvsC_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+write.table(CvsD_GO, file="../GO_analysis/Revisions/background_GO_lists/CvsD_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+write.table(DvsE_GO, file="../GO_analysis/Revisions/background_GO_lists/DvsE_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+write.table(EvsF_GO, file="../GO_analysis/Revisions/background_GO_lists/EvsF_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+write.table(BvsF_GO, file="../GO_analysis/Revisions/background_GO_lists/BvsF_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
+write.table(AvsE_GO, file="../GO_analysis/Revisions/background_GO_lists/AvsE_background_gene_set.txt", sep="\t",quote = F, col.names = T, row.names = F)
 
 # Prepare the diff meth gene lists as well from Ben's excel sheet
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/diff_meth_CpG_lists")
+setwd("~/Dropbox/Research/Leicester_postdoc/Projects/IDLE/Ben_Developmental_BB/diff_meth_CpG_lists")
 
 file.list <- list.files(pattern="*diff_meth_genes.txt")
 

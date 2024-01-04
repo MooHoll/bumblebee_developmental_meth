@@ -2,7 +2,7 @@
 # Calculating the Jensen-Shannon diversity index for all genes
 # ----------------------------------------------------------------
 
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/weighted_meth_genes")
+setwd("~/Dropbox/Research/Leicester_postdoc/Projects/IDLE/Ben_Developmental_BB/weighted_meth_genes")
 
 # Useful links
 # https://github.com/genomaths/MethylIT
@@ -139,17 +139,23 @@ write.table(weird_chr_genes, file="weird_chr_JSD_for_GO.txt", sep="\t", quote = 
 # ----------------------------------------------------------------
 # Make GO background files
 
-Bumble_bee_ensemble_GO_terms <- read_delim("../GO_analysis/Bumble_bee_ensemble_GO_terms.txt", 
+Bumble_bee_ensemble_GO_terms <- read_delim("../GO_analysis/Revisions/Bombus_terrestris_HGD_go_annotation.txt", 
                                            delim = "\t", escape_double = FALSE, 
                                            col_names = FALSE, trim_ws = TRUE)
+Bumble_bee_ensemble_GO_terms <- Bumble_bee_ensemble_GO_terms[,-2]
 colnames(Bumble_bee_ensemble_GO_terms) <- c("gene_id", "GOIds")
 
+library(readr)
+setwd("~/Dropbox/Research/Leicester_postdoc/Projects/IDLE/Ben_Developmental_BB/GO_analysis/Revisions/JSD_index")
+
+all_genes <- read_csv("~/Dropbox/Research/Leicester_postdoc/Projects/IDLE/Ben_Developmental_BB/GO_analysis/Revisions/JSD_index/all_genes_JSD_GO_background.txt")
 all_genes_GO <- merge(all_genes, Bumble_bee_ensemble_GO_terms, by = "gene_id")
-length(unique(all_genes_GO$gene_id)) # 7062/8182
+length(unique(all_genes_GO$gene_id)) # 7094/8182
 write.table(all_genes_GO, file="all_genes_JSD_with_GOterms.txt", sep="\t", quote = F, col.names = T, row.names = F)
 
+outliers_for_go <- read_csv("~/Dropbox/Research/Leicester_postdoc/Projects/IDLE/Ben_Developmental_BB/GO_analysis/Revisions/JSD_index/outliers_JSD_for_GO.txt")
 outliers_GO <- merge(outliers_for_go, Bumble_bee_ensemble_GO_terms, by = "gene_id")
-length(unique(outliers_GO$gene_id)) # 763/827
+length(unique(outliers_GO$gene_id)) # 777/827
 write.table(outliers_GO, file="outlier_JSD_with_GOterms.txt", sep="\t", quote = F, col.names = T, row.names = F)
 
 

@@ -13,4 +13,4 @@ cd $PBS_O_WORKDIR
 # Load software needed 
 module load R/3.6.1 
 
-R --save -q -f script.R
+R --no-restore --save -q -f script.R

@@ -2,13 +2,14 @@
 # Gene lists with GO terms
 #---------------------------------------------------
 
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis")
+setwd("~/Dropbox/Research/Leicester_postdoc/Projects/IDLE/Ben_Developmental_BB/GO_analysis/Revisions")
 library(readr)
 
 # Main files
-Bumble_bee_ensemble_GO_terms <- read_delim("../Bumble_bee_ensemble_GO_terms.txt", 
+Bumble_bee_ensemble_GO_terms <- read_delim("Bombus_terrestris_HGD_go_annotation.txt", 
                                            delim = "\t", escape_double = FALSE, 
                                            col_names = FALSE, trim_ws = TRUE)
+Bumble_bee_ensemble_GO_terms <- Bumble_bee_ensemble_GO_terms[,-2]
 colnames(Bumble_bee_ensemble_GO_terms) <- c("geneID", "GOIds")
 
 weighted_meth_by_group <- read_delim("../../weighted_meth_genes/weighted_meth_by_group_genes_only.txt", 
@@ -77,7 +78,7 @@ write.table(high_F_GO, file="F_high_meth_genes_with_GOs.txt", sep="\t",quote = F
 
 
 # Get gene lists for diff meth
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis/diff_meth_genes")
+setwd("~/Dropbox/Research/Leicester_postdoc/Projects/IDLE/Ben_Developmental_BB/GO_analysis/Revisions/diff_meth_genes")
 file.list <- list.files(pattern="*diff_meth_genes_final.txt")
 
 read_file1 <- function(x){
@@ -90,7 +91,8 @@ names(samples) <- sample_names
 
 for(i in seq_along(samples)){
   df <- samples[[i]]
-  final_file <- merge(df, Bumble_bee_ensemble_GO_terms, by = "gene_id")
+  colnames(df) <- "geneID"
+  final_file <- merge(df, Bumble_bee_ensemble_GO_terms, by = "geneID")
   myfile <- file.path("./", paste0(names(samples[i]),"_","with_GOs.txt"))
   write.table(final_file, file=myfile, quote=F, sep="\t", row.names=F, col.names = T)
 }

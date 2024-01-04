@@ -2,7 +2,7 @@
 # Script created by Alun Jones, see paper Bebane et al. (2019) Neonics and bumblebees...
 #-----------------------------------------------
 
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis/JSD_index")
+setwd("~/Dropbox/Research/Leicester_postdoc/Projects/IDLE/Ben_Developmental_BB/GO_analysis/Revisions/JSD_index")
 library(GOstats)
 library(GSEABase)
 library(treemap)
@@ -42,7 +42,7 @@ my_genes <- as.vector(my_genes[,1])
 
 my_genes <- my_genes[my_genes %in% universe]
 length(my_genes)
-# outliers: 763/827
+# outliers: 777/827
 # weird chr: 11/12
 
 #-----------------------------------------------

@@ -2,7 +2,7 @@
 # Script created by Alun Jones, see paper Bebane et al. (2019) Neonics and bumblebees...
 #-----------------------------------------------
 
-setwd("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/GO_analysis")
+setwd("~/Dropbox/Research/Leicester_postdoc/Projects/IDLE/Ben_Developmental_BB/GO_analysis/Revisions")
 library(GOstats)
 library(GSEABase)
 library(treemap)
@@ -52,13 +52,13 @@ my_genes <- as.vector(my_genes[,1])
 
 my_genes <- my_genes[my_genes %in% universe]
 length(my_genes)
-# AvsB 1102/1222
-# AvsE 26/37
-# BvsC 252/286
-# BvsF 112/134
+# AvsB 1116/1222
+# AvsE 25/37
+# BvsC 256/286
+# BvsF 113/134
 # CvsD 2/5
-# DvsE 138/156
-# EvsF 33/49
+# DvsE 140/156
+# EvsF 34/49
 
 
 #-----------------------------------------------
