@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#SBATCH --job-name=snakemake
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=100G
+#SBATCH --time=00:05:00
+#SBATCH --export=NONE
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=hollie_marshall@hotmail.co.uk
+#SBATCH --account=evo-epi
+
+# Run script in the working directory it was submitted in
+cd $SLURM_SUBMIT_DIR
+
+module load R/4.3.1
+
+R --no-restore --save -q -f script.R
